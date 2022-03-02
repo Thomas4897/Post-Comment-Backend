@@ -79,7 +79,31 @@ const userLogin = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const decodedToken = res.locals.decodedToken;
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+
+    req.body.password = hashedPassword;
+
+    const updatedUser = await User.findOneAndUpdate(
+      { email: decodedToken.email },
+      req.body,
+      { new: true }
+    );
+
+    // console.log(updatedUser);
+    // console.log(decodedToken);
+    res.status(200).json({ message: "Updated User", payload: updatedUser });
+  } catch (error) {
+    res.status(500).json({ error: errorHandler(error) });
+  }
+};
+
 module.exports = {
   createUser,
   userLogin,
+  updateProfile,
 };
