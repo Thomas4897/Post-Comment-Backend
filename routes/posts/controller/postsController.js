@@ -35,21 +35,25 @@ const createPost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
-    const decodedData = res.locals.decodedToken;
+    // const decodedData = res.locals.decodedToken;
 
-    const foundUser = await User.findOne({ email: decodedData.email });
-    console.log(foundUser);
-    if (!foundUser) {
-      throw { message: "User not found." };
-    }
+    // const foundUser = await User.findOne({ email: decodedData.email });
+    // console.log(foundUser);
+    // if (!foundUser) {
+    //   throw { message: "User not found." };
+    // }
 
-    let allPost = await Post.find({ postOwner: foundUser.id });
+    // let allPost = await Post.find({ postOwner: foundUser.id });
+
+    let allPost = await Post.find()
+      .populate("postOwner", "username")
+      .populate("commentHistory", "comment");
 
     if (allPost.length <= 0) {
       throw { message: "No posts created yet." };
     }
 
-    res.status(200).json({ payload: allPost });
+    res.status(200).json(allPost);
   } catch (error) {
     res.status(500).json({ message: "Error", error: error.message });
   }

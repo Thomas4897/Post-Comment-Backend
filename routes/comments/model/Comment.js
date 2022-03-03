@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+
 const commentSchema = mongoose.Schema(
   {
     postId: { type: mongoose.Schema.ObjectId, ref: "post" },
