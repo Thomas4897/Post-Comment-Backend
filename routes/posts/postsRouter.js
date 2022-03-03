@@ -1,6 +1,5 @@
 var express = require("express");
 var router = express.Router();
-// const { route } = require("express/lib/application");
 const { checkIsEmpty, jwtMiddleware } = require("../../utils/index");
 
 const {
@@ -19,9 +18,9 @@ router.post("/create-post", checkIsEmpty, jwtMiddleware, createPost);
 
 router.get("/get-all-posts", jwtMiddleware, getAllPosts);
 
-router.put("/update-post", jwtMiddleware, checkIsEmpty, updatePost); // CANNOT update owner
+router.put("/update-post", checkIsEmpty, jwtMiddleware, updatePost); // CANNOT update owner
 
-router.delete("/delete-post", jwtMiddleware, deletePost);
+router.delete("/delete-post", checkIsEmpty, jwtMiddleware, deletePost);
 
 // you can update the items, name, and amount
 

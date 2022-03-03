@@ -8,8 +8,6 @@ const createUser = async (req, res) => {
   try {
     const { firstName, lastName, username, email, password } = req.body;
 
-    // Validate User Info -> Moved to lib folder
-
     // Hashing/Encrypting Password;
     let salt = await bcrypt.genSalt(10);
     let hashedPassword = await bcrypt.hash(password, salt);
@@ -94,8 +92,6 @@ const updateProfile = async (req, res) => {
       { new: true }
     );
 
-    // console.log(updatedUser);
-    // console.log(decodedToken);
     res.status(200).json({ message: "Updated User", payload: updatedUser });
   } catch (error) {
     res.status(500).json({ error: errorHandler(error) });

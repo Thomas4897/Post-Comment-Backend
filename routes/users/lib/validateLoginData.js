@@ -2,7 +2,6 @@ const { isEmail } = require("validator");
 
 function validateLoginData(req, res, next) {
   let errObj = {};
-  // let body = req.body;
   const { email } = req.body;
 
   if (!isEmail(email)) {
