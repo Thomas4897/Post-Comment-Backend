@@ -1,4 +1,5 @@
 const { checkIsEmpty } = require("./checkIsEmpty");
+const { errorHandler } = require("./errorHandler");
 const { jwtMiddleware } = require("./jwtMiddleware");
 // const { validateCreateData } = require("./validateCreateData");
 // const { validateLoginData } = require("./validateLoginData");
@@ -6,6 +7,7 @@ const { jwtMiddleware } = require("./jwtMiddleware");
 
 module.exports = {
   checkIsEmpty,
+  errorHandler,
   jwtMiddleware,
   //   validateCreateData,
   //   validateLoginData,

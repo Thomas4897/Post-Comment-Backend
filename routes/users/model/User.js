@@ -4,21 +4,32 @@ const userSchema = new mongoose.Schema(
   {
     firstName: String,
     lastName: String,
-    username: { type: String, unique: true },
-    email: { type: String, unique: true },
-    password: String,
-    // postHistory: [
-    //   {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: "post",
-    //   },
-    // ],
-    // commentHistory: [
-    //   {
-    //     type: mongoose.Schema.ObjectId,
-    //     ref: "comment",
-    //   },
-    // ],
+    username: {
+      type: String,
+      unique: true,
+      require: [true, "cannot leave empty"],
+    },
+    email: {
+      type: String,
+      unique: true,
+      require: [true, "cannot leave empty"],
+    },
+    password: {
+      type: String,
+      require: [true, "cannot leave empty"],
+    },
+    postHistory: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "post",
+      },
+    ],
+    commentHistory: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "comment",
+      },
+    ],
   },
   { timestamps: true }
 );

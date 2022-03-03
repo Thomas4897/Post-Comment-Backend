@@ -27,7 +27,7 @@ const createUser = async (req, res) => {
     let savedUser = await newUser.save();
 
     res.status(200).json({
-      message: "New user has been saved",
+      message: "New user has been created",
       payload: savedUser,
     });
   } catch (error) {

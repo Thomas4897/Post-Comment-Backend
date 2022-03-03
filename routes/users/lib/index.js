@@ -1,9 +1,9 @@
-const { validateCreateData } = require("./validateCreateData");
+const { validateCreateUserData } = require("./validateCreateUserData");
 const { validateLoginData } = require("./validateLoginData");
-const { validateUpdateData } = require("./validateUpdateData");
+const { validateUpdateUserData } = require("./validateUpdateUserData");
 
 module.exports = {
-  validateCreateData,
+  validateCreateUserData,
   validateLoginData,
-  validateUpdateData,
+  validateUpdateUserData,
 };

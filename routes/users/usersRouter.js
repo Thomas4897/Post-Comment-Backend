@@ -7,15 +7,12 @@ const {
   userLogin,
   updateProfile,
 } = require("./controller/usersController");
-const {
-  checkIsEmpty,
-  jwtMiddleware,
-} = require("../../lib/authMiddleware/index");
+const { checkIsEmpty, jwtMiddleware } = require("../../utils");
 
 const {
   validateLoginData,
-  validateCreateData,
-  validateUpdateData,
+  validateCreateUserData,
+  validateUpdateUserData,
 } = require("./lib/index");
 
 /* GET users listing. */
@@ -23,7 +20,7 @@ router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
 
-router.post("/create-user", checkIsEmpty, validateCreateData, createUser);
+router.post("/create-user", checkIsEmpty, validateCreateUserData, createUser);
 
 router.post("/login", checkIsEmpty, validateLoginData, userLogin);
 
@@ -31,7 +28,7 @@ router.put(
   "/update-profile",
   jwtMiddleware,
   checkIsEmpty,
-  validateUpdateData,
+  validateUpdateUserData,
   updateProfile
 );
 

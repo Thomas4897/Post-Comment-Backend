@@ -1,6 +1,6 @@
 const { isAlpha, isAlphanumeric, isStrongPassword } = require("validator");
 
-function validateUpdateData(req, res, next) {
+function validateUpdateUserData(req, res, next) {
   let errObj = {};
   let body = req.body;
   const { firstName, lastName, username, password, confirmPassword } = req.body;
@@ -43,5 +43,5 @@ function validateUpdateData(req, res, next) {
 }
 
 module.exports = {
-  validateUpdateData,
+  validateUpdateUserData,
 };

@@ -5,7 +5,7 @@ const {
   isStrongPassword,
 } = require("validator");
 
-function validateCreateData(req, res, next) {
+function validateCreateUserData(req, res, next) {
   let errObj = {};
   let body = req.body;
 
@@ -47,5 +47,5 @@ function validateCreateData(req, res, next) {
 }
 
 module.exports = {
-  validateCreateData,
+  validateCreateUserData,
 };
