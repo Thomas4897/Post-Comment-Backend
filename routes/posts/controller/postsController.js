@@ -1,5 +1,6 @@
 const Post = require("../model/Post");
 const User = require("../../users/model/User");
+const Comment = require("../../comments/model/Comment");
 
 const { errorHandler } = require("../../../utils/errorHandler");
 
@@ -72,6 +73,10 @@ const updatePost = async (req, res) => {
 
     const foundPost = await Post.findById(postId);
 
+    if (!foundPost) {
+      throw { message: "Post not found." };
+    }
+
     if (foundUser.id.toString() !== foundPost.postOwner.toString()) {
       return res.status(500).json({
         message: "Error: You are not the owner of this post. Cannot Update!",
@@ -95,9 +100,9 @@ const deletePost = async (req, res) => {
     const decodedData = res.locals.decodedToken;
     const foundUser = await User.findOne({ email: decodedData.email });
 
-    if (!foundUser) {
-      throw { message: "User not found." };
-    }
+    // if (!foundUser) {
+    //   throw { message: "User not found." };
+    // }
 
     const foundPost = await Post.findById(postId);
 
@@ -105,8 +110,6 @@ const deletePost = async (req, res) => {
       throw { message: "Post not found." };
     }
 
-    console.log("Post", foundPost.postOwner.toString());
-    console.log("User", foundUser.id);
     if (foundUser.id !== foundPost.postOwner.toString()) {
       return res.status(500).json({
         message: "Error: You are not the owner of this post. Cannot Delete!",
@@ -121,9 +124,16 @@ const deletePost = async (req, res) => {
 
     const pullIdFromArray = foundUser.postHistory.pull(postId);
 
-    console.log(pullIdFromArray);
-
     await foundUser.save();
+
+    // deleteMany
+    const deleteComments = await Comment.deleteMany({
+      postId: postId,
+    });
+
+    // const deleteComments = await User.deleteMany({
+    //   commentHistory: postId,
+    // });
 
     res.status(200).json({
       message: "Post deleted",

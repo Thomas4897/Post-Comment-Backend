@@ -134,7 +134,7 @@ const deleteComment = async (req, res) => {
     const deletedComment = await Comment.findByIdAndDelete(commentId);
 
     if (deletedComment === null) {
-      throw new Error("No post of id is found, cannot delete");
+      throw new Error("No comment of id is found, cannot delete");
     }
 
     const pullIdFromUserArray = foundUser.commentHistory.pull(commentId);
