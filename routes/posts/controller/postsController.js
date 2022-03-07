@@ -36,25 +36,22 @@ const createPost = async (req, res) => {
 
 const getAllPosts = async (req, res) => {
   try {
-    // const decodedData = res.locals.decodedToken;
+    // render index.ejs page.
+    // pass in the foundAllPosts information as posts
 
-    // const foundUser = await User.findOne({ email: decodedData.email });
-    // console.log(foundUser);
-    // if (!foundUser) {
-    //   throw { message: "User not found." };
-    // }
+    // IN the index.ejs page console.log(posts)
+    // forEach of the posts and display each post's title and post
 
-    // let allPost = await Post.find({ postOwner: foundUser.id });
-
-    let allPost = await Post.find()
+    let allPosts = await Post.find()
       .populate("postOwner", "username")
       .populate("commentHistory", "comment");
 
-    if (allPost.length <= 0) {
-      throw { message: "No posts created yet." };
-    }
+    // if (allPosts.length <= 0) {
+    //   throw { message: "No posts created yet." };
+    // }
 
-    res.status(200).json(allPost);
+    // res.status(200).json(allPost);
+    res.render("index", { posts: allPosts });
   } catch (error) {
     res.status(500).json({ message: "Error", error: error.message });
   }
