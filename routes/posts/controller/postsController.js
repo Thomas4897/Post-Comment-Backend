@@ -7,9 +7,7 @@ const { errorHandler } = require("../../../utils/errorHandler");
 const createPost = async (req, res) => {
   try {
     const { title, post } = req.body;
-
     const decodedData = res.locals.decodedToken;
-
     const foundUser = await User.findOne({ email: decodedData.email });
 
     if (!foundUser) {
@@ -49,9 +47,24 @@ const getAllPosts = async (req, res) => {
     // if (allPosts.length <= 0) {
     //   throw { message: "No posts created yet." };
     // }
-
+    console.log(allPosts);
     // res.status(200).json(allPost);
-    res.render("index", { posts: allPosts });
+    res.render("show-all-posts", { posts: allPosts });
+  } catch (error) {
+    res.status(500).json({ message: "Error", error: error.message });
+  }
+};
+
+const getPostById = async (req, res) => {
+  try {
+    const { postId } = req.params;
+
+    const onePost = await Post.findById(postId).populate("commentHistory");
+    if (!onePost) {
+      throw { message: "Cannot find post" };
+    }
+
+    res.status(200).render("show-one-post", { post: onePost });
   } catch (error) {
     res.status(500).json({ message: "Error", error: error.message });
   }
@@ -94,50 +107,51 @@ const deletePost = async (req, res) => {
   try {
     const { postId } = req.body;
 
-    const decodedData = res.locals.decodedToken;
-    const foundUser = await User.findOne({ email: decodedData.email });
-
-    // if (!foundUser) {
-    //   throw { message: "User not found." };
-    // }
+    const decodedUser = res.locals.decodedToken;
+    const foundUser = await User.findOne({ email: decodedUser.email });
 
     const foundPost = await Post.findById(postId);
+    if (!foundPost) throw { message: "Post not found" };
 
-    if (!foundPost) {
-      throw { message: "Post not found." };
-    }
+    if (foundUser._id.toString() === foundPost.postOwner.toString()) {
+      const deletedPost = await Post.findByIdAndDelete(postId);
 
-    if (foundUser.id !== foundPost.postOwner.toString()) {
-      return res.status(500).json({
-        message: "Error: You are not the owner of this post. Cannot Delete!",
+      //we will use deleteMany({ post: id })
+      //find other comments based on user
+      //looks for those comments, find the users of those comments
+      //delete based on id
+      if (foundPost.commentHistory.length > 0) {
+        const foundComments = await Comment.find({ postId: postId });
+        if (!foundComment) throw { message: "Comment not found" };
+
+        await foundComments.map(async (comment) => {
+          console.log(comment);
+          let commentUser = await User.findById(comment.commentOwner);
+          await commentUser.commentHistory.pull(comment._id.toString());
+          await commentUser.save();
+        });
+
+        await Comment.deleteMany({ postId: postId });
+        // await Comment.save();
+      }
+
+      await foundUser.postHistory.pull(postId);
+      await foundUser.save();
+
+      res.status(200).json({
+        message: "post was deleted",
+        deletePost: deletedPost,
+        deletedInUser: foundUser,
       });
+    } else {
+      throw { message: "You do not have the permission to delete" };
     }
-
-    const deletedPost = await Post.findByIdAndDelete(postId);
-
-    if (deletedPost === null) {
-      throw new Error("No post of id is found, cannot delete");
-    }
-
-    const pullIdFromArray = foundUser.postHistory.pull(postId);
-
-    await foundUser.save();
-
-    // deleteMany
-    const deleteComments = await Comment.deleteMany({
-      postId: postId,
-    });
-
-    // const deleteComments = await User.deleteMany({
-    //   commentHistory: postId,
-    // });
-
-    res.status(200).json({
-      message: "Post deleted",
-      payload: deletedPost,
-    });
+    //delete post
+    //delete post id from user postHistory
+    //check if there are comments under this post, and delete those comments if its there
   } catch (error) {
-    res.status(500).json({ message: "Error", error: error.message });
+    console.log(error);
+    res.status(500).json({ message: "error", error: error });
   }
 };
 
@@ -146,4 +160,5 @@ module.exports = {
   getAllPosts,
   updatePost,
   deletePost,
+  getPostById,
 };

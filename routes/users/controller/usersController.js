@@ -24,10 +24,11 @@ const createUser = async (req, res) => {
     // Use .save() to save new user object to DB
     let savedUser = await newUser.save();
 
-    res.status(200).json({
-      message: "New user has been created",
-      payload: savedUser,
-    });
+    // res.status(200).json({
+    //   message: "New user has been created",
+    //   payload: savedUser,
+    // });
+    res.redirect("/login-form");
   } catch (error) {
     res.status(500).json({
       error: errorHandler(error),
@@ -70,7 +71,8 @@ const userLogin = async (req, res) => {
     );
 
     if (foundUser) {
-      return res.status(200).json({ payload: jwtToken });
+      // return res.status(200).json({ payload: jwtToken });
+      return res.redirect("/post-form");
     }
   } catch (error) {
     res.status(500).json({ error: error.message });

@@ -8,9 +8,7 @@ const { errorHandler } = require("../../../utils/errorHandler");
 const createComment = async (req, res) => {
   try {
     const { postId, comment } = req.body;
-
     const decodedData = res.locals.decodedToken;
-
     const foundUser = await User.findOne({ email: decodedData.email });
 
     if (!foundUser) {
@@ -19,9 +17,7 @@ const createComment = async (req, res) => {
 
     const foundPost = await Post.findById(postId);
 
-    if (!foundPost) {
-      throw { message: "Post not found." };
-    }
+    if (!foundPost) throw { message: "Post not found" };
 
     const newComment = new Comment({
       postId: foundPost.id,
